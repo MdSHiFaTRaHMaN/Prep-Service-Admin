@@ -10,10 +10,10 @@ import Overview from "../pages/Overview";
 import ProductReturn from "../pages/ProductReturn";
 import BillOverview from "../pages/BillOverview";
 import Payment from "../pages/Payment";
-import Allinventory from "../pages/AllInventory";
 import ManegeRates from "../pages/ManegeRates";
 import AllUsers from "../pages/AllUsers";
 import NewUser from "../pages/NewUser";
+import Allinventory from "../pages/AllInventory";
 
 
 
