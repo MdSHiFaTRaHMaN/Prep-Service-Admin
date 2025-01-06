@@ -89,7 +89,7 @@ const AllUsers = () => {
     {
       user_id: "02",
       name: "HERO ALOM",
-      email: "imadmin@gmail.com",
+      email: "heroalom@gmail.com",
       phone: "017 11 22 33 44",
       image: "https://i.ibb.co.com/jVPrdYG/images.jpg",
       status: "Active",
