@@ -26,8 +26,9 @@ const ManegeRates = () => {
         <h1 className="text-xl font-bold mb-4">Select Rate</h1>
         <select className="w-full p-2 mb-4 border rounded-md">
           <option>Select Rate</option>
-          <option>Rate 1</option>
-          <option>Rate 2</option>
+          <option>FBA</option>
+          <option>FBM</option>
+          <option>Mics</option>
         </select>
 
         {rows.map((row, index) => (
