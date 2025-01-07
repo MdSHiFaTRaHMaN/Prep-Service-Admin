@@ -13,7 +13,7 @@ import Payment from "../pages/Payment";
 import ManegeRates from "../pages/ManegeRates";
 import AllUsers from "../pages/AllUsers";
 import NewUser from "../pages/NewUser";
-import Allinventory from "../pages/AllInventory";
+import Allinventory from "../pages/Allinventory";
 
 
 
