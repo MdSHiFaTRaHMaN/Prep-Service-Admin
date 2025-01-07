@@ -1,7 +1,28 @@
 import { DownOutlined, PrinterOutlined } from "@ant-design/icons";
 import { Button, Dropdown, Select, Table } from "antd";
+import UserInfoModel from "../components/UserInfoModel";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const Allinventory = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState(null);
+
+  const showModal = (user) => {
+    setSelectedUser(user);
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+    setSelectedUser(null);
+  };
+
   const columns = [
     {
       title: "Date",
@@ -13,7 +34,11 @@ const Allinventory = () => {
       title: "User Name",
       dataIndex: "name",
       key: "date",
-      render: (name) => <span>{name}</span>,
+      render: (name) => (
+        <span onClick={() => showModal(name)} className="cursor-pointer">
+          {name}
+        </span>
+      ),
     },
     {
       title: "Image",
@@ -84,11 +109,14 @@ const Allinventory = () => {
     {
       title: "Print",
       key: "print",
-      render: () => (
-        <Button
-          type="text"
-          icon={<PrinterOutlined className="text-orange-500 text-xl" />}
-        />
+      render: (record) => (
+        <Link
+          to={`/inventory-print`}
+          className="flex items-center text-orange-500"
+        >
+          <PrinterOutlined className="text-xl" />
+          <span className="ml-2">Print</span>
+        </Link>
       ),
     },
   ];
@@ -168,6 +196,11 @@ const Allinventory = () => {
         dataSource={data}
         pagination={false}
         className="bg-white shadow-md rounded-md"
+      />
+      <UserInfoModel
+        isModalOpen={isModalOpen}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
       />
     </div>
   );

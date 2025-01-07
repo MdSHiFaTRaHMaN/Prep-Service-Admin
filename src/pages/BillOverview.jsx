@@ -6,8 +6,24 @@ import {
 } from "@ant-design/icons";
 import { AiFillPrinter } from "react-icons/ai";
 import { FaUserAlt } from "react-icons/fa";
+import { useState } from "react";
+import UserInfoModel from "../components/UserInfoModel";
 
 const BillOverview = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const stats = [
     { title: "Units in Storage", value: "40,689", icon: <FaUserAlt /> },
     { title: "No. of SKU's", value: "10,293", icon: <BoxPlotOutlined /> },
@@ -23,6 +39,7 @@ const BillOverview = () => {
     .map((_, index) => ({
       key: index,
       date: "01/01/2024",
+      image: "https://i.ibb.co.com/RhvxW5G/images.jpg",
       transaction: `101-00${979 + index}`,
       type: "FBM",
       quantity: 1,
@@ -35,6 +52,19 @@ const BillOverview = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
+    },
+    {
+      title: "User Image",
+      dataIndex: "image",
+      key: "image",
+      render: (src) => (
+        <img
+          onClick={() => showModal(name)}
+          src={src}
+          alt="Product"
+          className="w-16 h-16 object-cover rounded-md cursor-pointer"
+        />
+      ),
     },
     {
       title: "Transaction No.",
@@ -155,6 +185,11 @@ const BillOverview = () => {
           className="custom-table"
         />
       </div>
+      <UserInfoModel
+        isModalOpen={isModalOpen}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+      />
     </div>
   );
 };

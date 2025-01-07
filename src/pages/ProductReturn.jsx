@@ -1,7 +1,23 @@
 import { PrinterOutlined } from "@ant-design/icons";
 import { Button, Select, Table } from "antd";
+import { useState } from "react";
+import UserInfoModel from "../components/UserInfoModel";
 
 const ProductReturn = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
+
   const columns = [
     {
       title: "Date",
@@ -13,7 +29,11 @@ const ProductReturn = () => {
       title: "User Name",
       dataIndex: "name",
       key: "date",
-      render: (name) => <span>{name}</span>,
+      render: (name) => (
+        <span onClick={() => showModal(name)} className="cursor-pointer">
+          {name}
+        </span>
+      ),
     },
     {
       title: "Image",
@@ -42,7 +62,7 @@ const ProductReturn = () => {
       dataIndex: "quantity",
       key: "quantity",
     },
-    
+
     {
       title: "Resone.",
       dataIndex: "resone",
@@ -153,6 +173,11 @@ const ProductReturn = () => {
         dataSource={data}
         pagination={true}
         className="bg-white shadow-md rounded-md"
+      />
+      <UserInfoModel
+        isModalOpen={isModalOpen}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
       />
     </div>
   );

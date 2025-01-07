@@ -15,7 +15,12 @@ const sidebarItems = [
   {
     key: "1",
     icon: <RiDashboard3Line />,
-    label: <Link to="/" className="font-semibold"> Dashboard</Link>,
+    label: (
+      <Link to="/" className="font-semibold">
+        {" "}
+        Dashboard
+      </Link>
+    ),
   },
   {
     key: "2",
@@ -24,23 +29,31 @@ const sidebarItems = [
     children: [
       {
         key: "2-1",
-        label: <Link to='/overview'>Overview</Link>,
+        label: <Link to="/overview">Overview</Link>,
       },
       {
         key: "2-2",
-        label: <Link to='/allinventory'>All Inventory</Link>,
+        label: <Link to="/allinventory">All Inventory</Link>,
       },
     ],
   },
   {
     key: "3",
     icon: <GiReturnArrow />,
-    label: <Link to="/productReturn" className="font-semibold">Product Return</Link>,
+    label: (
+      <Link to="/productReturn" className="font-semibold">
+        Product Return
+      </Link>
+    ),
   },
   {
     key: "4",
     icon: <FaUsers />,
-    label: <Link to="/prep" className="font-semibold">Prep</Link>,
+    label: (
+      <Link to="/prep" className="font-semibold">
+        Prep
+      </Link>
+    ),
   },
   {
     key: "5",
@@ -83,14 +96,18 @@ const sidebarItems = [
       },
       {
         key: "6-2",
-        label: <Link to="/manage-rate">Manage Rate</Link>,
+        label: <Link to="/create-rate">Create Rate</Link>,
       },
     ],
   },
   {
     key: "8",
     icon: <RiExchangeDollarLine />,
-    label: <Link to="/reports" className="font-semibold">Reports</Link>,
+    label: (
+      <Link to="/reports" className="font-semibold">
+        Reports
+      </Link>
+    ),
   },
   {
     key: "9",
@@ -107,6 +124,37 @@ const sidebarItems = [
       },
     ],
   },
+  {
+    type: "divider",
+  },
+  {
+    key: "10",
+    icon: <SettingOutlined />,
+    label: <span className="font-semibold">Setting</span>,
+    children: [
+      {
+        key: "10-1",
+        label: <Link to="/fcm-configaration">FCM Configaration</Link>,
+      },
+      {
+        key: "10-2",
+        label: <Link to="/smtp-comfigaration">SMTP Configaration</Link>,
+      },
+      {
+        key: "10-3",
+        label: <Link to="/change-password">Change Password</Link>,
+      },
+    ],
+  },
+  {
+    key: "3",
+    icon: <LogoutOutlined />,
+    label: (
+      <Link to="/productReturn" className="font-semibold">
+        Logout
+      </Link>
+    ),
+  },
 ];
 
 const Sidebar = () => {
@@ -117,29 +165,19 @@ const Sidebar = () => {
   };
 
   return (
-   <div>
-     <Menu
-      mode="inline"
-      selectedKeys={[selectedKey]}
-      onClick={handleClick}
-      items={sidebarItems}
-      style={{
-        height: "80%",
-        borderRight: 0,
-      }}
-      theme="light" // Keep menu in light theme
-    />
-     <div className="p-4 border-t flex flex-col gap-4 bottom-0 bg-white">
-        <div className="flex items-center gap-2">
-          <SettingOutlined />
-          <Link to="/settings" className="font-semibold">Settings</Link>
-        </div>
-        <div className="flex items-center gap-2">
-          <LogoutOutlined />
-          <Link className="font-semibold">Log Out</Link>
-        </div>
-      </div>
-   </div>
+    <div>
+      <Menu
+        mode="inline"
+        selectedKeys={[selectedKey]}
+        onClick={handleClick}
+        items={sidebarItems}
+        style={{
+          height: "80%",
+          borderRight: 0,
+        }}
+        theme="light"
+      />
+    </div>
   );
 };
 

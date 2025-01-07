@@ -1,6 +1,7 @@
-import { Select, Table } from "antd";
+import { message, Modal, Select, Table } from "antd";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBinFill } from "react-icons/ri";
+import { Link } from "react-router-dom";
 
 const AllUsers = () => {
   const columns = [
@@ -50,16 +51,15 @@ const AllUsers = () => {
       render: (record) => (
         <div className="flex items-center gap-4">
           {/* Edit Icon */}
-          <span
-            onClick={() => handleEdit(record.key)}
+          <Link to="/edit-user"
             className="cursor-pointer text-xl text-blue-500 hover:text-blue-700"
           >
             <FiEdit />
-          </span>
+          </Link>
 
           {/* Delete Icon */}
           <span
-            onClick={() => handleDelete(record.key)}
+            onClick={() => handleDelete(record.user_id)}
             className="cursor-pointer text-xl text-red-500 hover:text-red-700"
           >
             <RiDeleteBinFill />
@@ -69,12 +69,21 @@ const AllUsers = () => {
     },
   ];
 
-  const handleEdit = (key) => {
-    console.log("Edit action for:", key);
-  };
 
   const handleDelete = (key) => {
-    console.log("Delete action for:", key);
+    Modal.confirm({
+      title: "Are you sure you want to delete this User?",
+      content: "This action cannot be undone.",
+      okText: "Yes",
+      cancelText: "No",
+      onOk: () => {
+        message.success(`User deleted successfully! ${key}`);
+        // Delete api lagbe)
+      },
+      onCancel: () => {
+        message.warning("Delete action cancelled");
+      },
+    });
   };
 
   const data = [

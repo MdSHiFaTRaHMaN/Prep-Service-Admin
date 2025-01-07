@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { PlusOutlined, MinusOutlined } from "@ant-design/icons";
 
 const ManegeRates = () => {

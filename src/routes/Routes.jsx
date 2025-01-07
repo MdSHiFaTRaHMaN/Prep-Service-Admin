@@ -2,9 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import Main from "../layout/Main";
 import DashBoard from "../pages/DashBoard";
 import Prep from "../pages/Prep";
-import Rates from "../pages/Rates";
 import Report from "../pages/Report";
-import Settings from "../pages/Settings";
 import Login from "../components/Login";
 import Overview from "../pages/Overview";
 import ProductReturn from "../pages/ProductReturn";
@@ -14,6 +12,12 @@ import ManegeRates from "../pages/ManegeRates";
 import AllUsers from "../pages/AllUsers";
 import NewUser from "../pages/NewUser";
 import Allinventory from "../pages/Allinventory";
+import PrintInventory from "../pages/PrintInventory";
+import Rates from "../pages/rates/Rates";
+import EditUser from "../pages/EditUser";
+import FcmConfigaration from "../pages/FcmConfigaration";
+import SmtpConfigaration from "../pages/SmtpConfigaration";
+import ChangePassword from "../pages/ChangePassword";
 
 
 
@@ -59,7 +63,7 @@ export const router = createBrowserRouter([
           element: <Rates />
          },
          {
-          path: "/manage-rate",
+          path: "/create-rate",
           element: <ManegeRates />
          },
          {
@@ -71,13 +75,29 @@ export const router = createBrowserRouter([
           element: <AllUsers />
          },
          {
-          path: "create-user",
+          path: "/create-user",
           element: <NewUser />
          },
          {
-          path: "/settings",
-          element: <Settings />
+          path: "/inventory-print",
+          element: <PrintInventory />
          },
+         {
+          path: "/edit-user",
+          element: <EditUser />
+         },
+         {
+          path: "/fcm-configaration",
+          element: <FcmConfigaration />
+         },
+         {
+          path: "/smtp-comfigaration",
+          element: <SmtpConfigaration />
+         },
+         {
+          path: "/change-password",
+          element : <ChangePassword />
+         }
     ],
   },
 ]);

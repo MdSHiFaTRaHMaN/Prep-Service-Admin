@@ -1,7 +1,22 @@
-import { DownOutlined, PrinterOutlined } from "@ant-design/icons";
-import { Button, Dropdown, Select, Table } from "antd";
+import { PrinterOutlined } from "@ant-design/icons";
+import { Button, Select, Table } from "antd";
+import { useState } from "react";
+import UserInfoModel from "../components/UserInfoModel";
 
 const Prep = () => {
+    const [isModalOpen, setIsModalOpen] = useState(false);
+  
+    const showModal = () => {
+      setIsModalOpen(true);
+    };
+  
+    const handleOk = () => {
+      setIsModalOpen(false);
+    };
+  
+    const handleCancel = () => {
+      setIsModalOpen(false);
+    };
   const columns = [
     {
       title: "Date",
@@ -13,7 +28,11 @@ const Prep = () => {
       title: "User Name",
       dataIndex: "name",
       key: "date",
-      render: (name) => <span>{name}</span>,
+      render: (name) => (
+        <span onClick={() => showModal(name)} className="cursor-pointer">
+          {name}
+        </span>
+      ),
     },
     {
       title: "Image",
@@ -42,7 +61,7 @@ const Prep = () => {
       dataIndex: "quantity",
       key: "quantity",
     },
-    
+
     {
       title: "Resone.",
       dataIndex: "resone",
@@ -153,6 +172,11 @@ const Prep = () => {
         dataSource={data}
         pagination={true}
         className="bg-white shadow-md rounded-md"
+      />
+      <UserInfoModel
+        isModalOpen={isModalOpen}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
       />
     </div>
   );

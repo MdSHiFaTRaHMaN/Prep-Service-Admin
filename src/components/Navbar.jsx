@@ -30,7 +30,7 @@ const Navbar = () => {
               icon={<UserOutlined />}
             />
             <div className="leading-tight">
-              <h4 className="text-sm font-semibold text-gray-700">Md Shifat</h4>
+              <h4 className="text-sm font-semibold text-gray-700">Md Shifat Rahman</h4>
               <p className="text-xs text-gray-500">Admin</p>
             </div>
             <FaChevronDown />
