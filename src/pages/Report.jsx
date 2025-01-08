@@ -1,7 +1,7 @@
-
 import { useState } from "react";
 import { Table, Button, Select, DatePicker, Pagination } from "antd";
 import { DownloadOutlined, FilterOutlined } from "@ant-design/icons";
+import UserInfoModel from "../components/UserInfoModel";
 
 const { RangePicker } = DatePicker;
 
@@ -17,9 +17,24 @@ const Report = () => {
       date: "2024-12-20",
       transactionId: `TXN-${index + 1001}`,
       type: "Sales",
+      image: "https://i.ibb.co.com/RhvxW5G/images.jpg",
       status: index % 2 === 0 ? "Completed" : "Pending",
       amount: `$${(Math.random() * 1000).toFixed(2)}`,
     }));
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   // Columns for the Table
   const columns = [
@@ -27,6 +42,19 @@ const Report = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
+    },
+    {
+      title: "User Profile",
+      dataIndex: "image",
+      key: "image",
+      render: (src) => (
+        <img
+          onClick={() => showModal(name)}
+          src={src}
+          alt="Product"
+          className="w-16 h-16 object-cover rounded-md"
+        />
+      ),
     },
     {
       title: "Transaction ID",
@@ -101,7 +129,9 @@ const Report = () => {
             />
           </div>
           <div>
-            <label className="block text-gray-600 mb-1">Select Date Range</label>
+            <label className="block text-gray-600 mb-1">
+              Select Date Range
+            </label>
             <RangePicker className="w-full" />
           </div>
           <div className="flex items-end">
@@ -137,6 +167,11 @@ const Report = () => {
           />
         </div>
       </div>
+      <UserInfoModel
+        isModalOpen={isModalOpen}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+      />
     </div>
   );
 };

@@ -168,6 +168,7 @@ const Sidebar = () => {
     <div>
       <Menu
         mode="inline"
+        className="mt-[20px]"
         selectedKeys={[selectedKey]}
         onClick={handleClick}
         items={sidebarItems}

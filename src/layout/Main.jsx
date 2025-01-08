@@ -45,7 +45,7 @@ const Main = () => {
   return (
     <Layout>
       {/* Header */}
-      <Header className="bg-white sticky top-0 z-10 w-full flex items-center shadow-md">
+      <Header className="bg-white sticky top-0 z-10 w-full flex items-center">
         <div className="flex items-center w-full">
           {!isLargeScreen && (
             <button
@@ -109,7 +109,7 @@ const Main = () => {
             </div>
 
             <div
-              className="min-h-[380px] p-4 bg-white rounded-lg shadow-md"
+              className="min-h-[380px] rounded-lg shadow-md"
               style={{ background: "#fff" }}
             >
               <Outlet />

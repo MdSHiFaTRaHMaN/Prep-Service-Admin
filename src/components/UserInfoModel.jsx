@@ -27,7 +27,7 @@ const UserInfoModel = ({ isModalOpen, handleOk, handleCancel }) => {
         <img
           src={user.image}
           alt={user.name}
-          className="w-24 h-24 rounded-full border-2 border-blue-500 shadow-md object-cover"
+          className="w-24 h-24 rounded-md border-2 border-blue-500 shadow-md object-cover"
         />
 
         {/* User Information */}

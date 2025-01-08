@@ -1,13 +1,16 @@
-import { Card, Select, Table } from "antd";
+import { Button, Card, DatePicker, Select, Table } from "antd";
 import {
   BoxPlotOutlined,
   ClockCircleOutlined,
   CheckOutlined,
+  FilterOutlined,
 } from "@ant-design/icons";
 import { AiFillPrinter } from "react-icons/ai";
 import { FaUserAlt } from "react-icons/fa";
 import { useState } from "react";
 import UserInfoModel from "../components/UserInfoModel";
+const {RangePicker} = DatePicker;
+
 
 const BillOverview = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -86,9 +89,27 @@ const BillOverview = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span className="text-green-600 bg-green-100 px-2 py-1 rounded-full">
-          {status}
-        </span>
+        <Select
+          defaultValue={status}
+          style={{
+            width: 120,
+          }}
+          // onChange={handleChange}
+          options={[
+            {
+              value: "padding",
+              label: "Padding",
+            },
+            {
+              value: "delivered",
+              label: "Delivered",
+            },
+            {
+              value: "out of Stock",
+              label: "Out Of Stock",
+            },
+          ]}
+        />
       ),
     },
     {
@@ -110,25 +131,11 @@ const BillOverview = () => {
   const onSearch = (value) => {
     console.log("search:", value);
   };
-  const timeOptions = [
+  const monthData = [
     { value: "today", label: "Today" },
     { value: "yesterday", label: "Yesterday" },
     { value: "thisMonth", label: "This Month" },
     { value: "previousMonth", label: "Previous Month" },
-  ];
-  const monthData = [
-    { value: "january", label: "January" },
-    { value: "february", label: "February" },
-    { value: "march", label: "March" },
-    { value: "april", label: "April" },
-    { value: "may", label: "May" },
-    { value: "june", label: "June" },
-    { value: "july", label: "July" },
-    { value: "august", label: "August" },
-    { value: "september", label: "September" },
-    { value: "october", label: "October" },
-    { value: "november", label: "November" },
-    { value: "december", label: "December" },
   ];
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
@@ -136,7 +143,7 @@ const BillOverview = () => {
         <h3 className="text-2xl font-semibold">BillOverview</h3>
         <Select
           showSearch
-          placeholder="Select a person"
+          placeholder="Select a Date"
           optionFilterProp="label"
           onChange={onChange}
           onSearch={onSearch}
@@ -165,14 +172,38 @@ const BillOverview = () => {
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold mb-4">Deals Details</h3>
-          <Select
-            showSearch
-            placeholder="Select a month"
-            optionFilterProp="label"
-            onChange={onChange}
-            onSearch={onSearch}
-            options={timeOptions}
-          />
+          {/* Filters */}
+          <div className="bg-white rounded-lg mb-6">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              <div>
+                <label className="block text-gray-600 mb-1">Select Type</label>
+                <Select
+                  placeholder="Select a type"
+                  className="w-full"
+                  options={[
+                    { value: "padding", label: "Padding" },
+                    { value: "delivered", label: "Delivered" },
+                    { value: "out of stock", label: "Out of Stock" },
+                  ]}
+                />
+              </div>
+              <div>
+                <label className="block text-gray-600 mb-1">
+                  Select Date Range
+                </label>
+                <RangePicker className="w-full" />
+              </div>
+              <div className="flex items-end">
+                <Button
+                  type="primary"
+                  icon={<FilterOutlined />}
+                  className="w-full bg-green-600"
+                >
+                  Apply Filters
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
         <Table
           dataSource={dataSource}

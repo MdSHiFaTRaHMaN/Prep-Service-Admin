@@ -8,20 +8,6 @@ import {
 import { BiTimeFive } from "react-icons/bi";
 
 const DashBoard = () => {
-  const onChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-
-  const onSearch = (value) => {
-    console.log("search:", value);
-  };
-
-  const timeOptions = [
-    { value: "today", label: "Today" },
-    { value: "yesterday", label: "Yesterday" },
-    { value: "thisMonth", label: "This Month" },
-    { value: "previousMonth", label: "Previous Month" },
-  ];
 
   return (
     <div className="p-6 bg-gray-100 min-h-screen">
@@ -59,7 +45,7 @@ const DashBoard = () => {
 
       {/* Inventory overview */}
 
-      <h1 className="text-3xl font-bold flex items-center gap-2 my-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-lg shadow-lg">
+      <h1 className="text-2xl font-semibold flex items-center gap-2 my-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-lg shadow-lg">
         <span className="flex items-center gap-2">
           Inventory
           <span className="bg-white text-blue-500 p-2 rounded-full shadow-md">
@@ -121,7 +107,7 @@ const DashBoard = () => {
       </div>
 
       {/* Billing -> Overview */}
-      <h1 className="text-3xl font-bold flex items-center gap-2 my-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-lg shadow-lg">
+      <h1 className="text-2xl font-semibold flex items-center gap-2 my-6 bg-gradient-to-r from-blue-500 to-purple-600 text-white p-4 rounded-lg shadow-lg">
         <span className="flex items-center gap-2">
           Billing
           <span className="bg-white text-blue-500 p-2 rounded-full shadow-md">

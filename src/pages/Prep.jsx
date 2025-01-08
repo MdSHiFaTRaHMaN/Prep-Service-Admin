@@ -1,22 +1,23 @@
-import { PrinterOutlined } from "@ant-design/icons";
-import { Button, Select, Table } from "antd";
+import { FilterOutlined, PrinterOutlined } from "@ant-design/icons";
+import { Button, DatePicker, Table } from "antd";
 import { useState } from "react";
 import UserInfoModel from "../components/UserInfoModel";
+const { RangePicker } = DatePicker;
 
 const Prep = () => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-  
-    const showModal = () => {
-      setIsModalOpen(true);
-    };
-  
-    const handleOk = () => {
-      setIsModalOpen(false);
-    };
-  
-    const handleCancel = () => {
-      setIsModalOpen(false);
-    };
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
   const columns = [
     {
       title: "Date",
@@ -133,39 +134,30 @@ const Prep = () => {
     },
   ];
 
-  const monthData = [
-    { value: "january", label: "January" },
-    { value: "february", label: "February" },
-    { value: "march", label: "March" },
-    { value: "april", label: "April" },
-    { value: "may", label: "May" },
-    { value: "june", label: "June" },
-    { value: "july", label: "July" },
-    { value: "august", label: "August" },
-    { value: "september", label: "September" },
-    { value: "october", label: "October" },
-    { value: "november", label: "November" },
-    { value: "december", label: "December" },
-  ];
-  const onChange = (value) => {
-    console.log(`selected ${value}`);
-  };
-  const onSearch = (value) => {
-    console.log("search:", value);
-  };
-
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-bold mb-4">Prep</h1>
-        <Select
-          showSearch
-          placeholder="Select a Month"
-          optionFilterProp="label"
-          onChange={onChange}
-          onSearch={onSearch}
-          options={monthData}
-        />
+        {/* Filters */}
+        <div className="rounded-lg mb-6">
+          <div className="flex gap-6">
+            <div>
+              <label className="block text-gray-600 mb-1">
+                Select Date Range
+              </label>
+              <RangePicker className="w-full" />
+            </div>
+            <div className="flex items-end">
+              <Button
+                type="primary"
+                icon={<FilterOutlined />}
+                className="w-full bg-green-600"
+              >
+                Apply Filters
+              </Button>
+            </div>
+          </div>
+        </div>
       </div>
       <Table
         columns={columns}

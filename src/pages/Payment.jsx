@@ -1,18 +1,24 @@
-import { Card, Select, Table } from "antd";
+import { Button, Card, DatePicker, Select, Table } from "antd";
 import {
   BoxPlotOutlined,
   ClockCircleOutlined,
   CheckOutlined,
+  FilterOutlined,
 } from "@ant-design/icons";
 import { AiFillPrinter } from "react-icons/ai";
 import { FaUserAlt } from "react-icons/fa";
+import UserInfoModel from "../components/UserInfoModel";
+import { useState } from "react";
+const { RangePicker } = DatePicker;
 
 const Payment = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   const stats = [
     { title: "Units in Storage", value: "40,689", icon: <FaUserAlt /> },
     { title: "No. of SKU's", value: "10,293", icon: <BoxPlotOutlined /> },
     { title: "In Process", value: "$89,000", icon: <CheckOutlined /> },
-    { title: "Prepped", value: "2040", icon: <ClockCircleOutlined /> }
+    { title: "Prepped", value: "2040", icon: <ClockCircleOutlined /> },
   ];
 
   const dataSource = Array(50) // Increased to demonstrate pagination
@@ -25,13 +31,39 @@ const Payment = () => {
       quantity: 1,
       status: "Out for Delivery",
       amount: "$34,295",
+      image: "https://i.ibb.co.com/RhvxW5G/images.jpg"
     }));
+
+  const showModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsModalOpen(false);
+  };
 
   const columns = [
     {
       title: "Date",
       dataIndex: "date",
       key: "date",
+    },
+    {
+      title: "User Profile",
+      dataIndex: "image",
+      key: "image",
+      render: (src) => (
+        <img
+          onClick={() => showModal(name)}
+          src={src}
+          alt="Product"
+          className="w-16 h-16 object-cover rounded-md"
+        />
+      ),
     },
     {
       title: "Transaction No.",
@@ -53,9 +85,27 @@ const Payment = () => {
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <span className="text-green-600 bg-green-100 px-2 py-1 rounded-full">
-          {status}
-        </span>
+        <Select
+          defaultValue={status}
+          style={{
+            width: 120,
+          }}
+          // onChange={handleChange}
+          options={[
+            {
+              value: "padding",
+              label: "Padding",
+            },
+            {
+              value: "delivered",
+              label: "Delivered",
+            },
+            {
+              value: "out of Stock",
+              label: "Out Of Stock",
+            },
+          ]}
+        />
       ),
     },
     {
@@ -83,31 +133,17 @@ const Payment = () => {
     { value: "thisMonth", label: "This Month" },
     { value: "previousMonth", label: "Previous Month" },
   ];
-  const monthData = [
-    { value: "january", label: "January" },
-    { value: "february", label: "February" },
-    { value: "march", label: "March" },
-    { value: "april", label: "April" },
-    { value: "may", label: "May" },
-    { value: "june", label: "June" },
-    { value: "july", label: "July" },
-    { value: "august", label: "August" },
-    { value: "september", label: "September" },
-    { value: "october", label: "October" },
-    { value: "november", label: "November" },
-    { value: "december", label: "December" },
-  ];
   return (
     <div className="p-4 bg-gray-100 min-h-screen">
       <div className="mb-3 flex justify-between">
         <h3 className="text-2xl font-semibold">Payment</h3>
         <Select
           showSearch
-          placeholder="Select a person"
+          placeholder="Select a Date"
           optionFilterProp="label"
           onChange={onChange}
           onSearch={onSearch}
-          options={monthData}
+          options={timeOptions}
         />
       </div>
       <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
@@ -132,14 +168,26 @@ const Payment = () => {
       <div className="bg-white shadow-md rounded-lg p-6">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold mb-4">Deals Details</h3>
-          <Select
-            showSearch
-            placeholder="Select a month"
-            optionFilterProp="label"
-            onChange={onChange}
-            onSearch={onSearch}
-            options={timeOptions}
-          />
+          {/* Filters */}
+          <div className="rounded-lg mb-6">
+            <div className="flex gap-6">
+              <div>
+                <label className="block text-gray-600 mb-1">
+                  Select Date Range
+                </label>
+                <RangePicker className="w-full" />
+              </div>
+              <div className="flex items-end">
+                <Button
+                  type="primary"
+                  icon={<FilterOutlined />}
+                  className="w-full bg-green-600"
+                >
+                  Apply Filters
+                </Button>
+              </div>
+            </div>
+          </div>
         </div>
         <Table
           dataSource={dataSource}
@@ -152,6 +200,11 @@ const Payment = () => {
           className="custom-table"
         />
       </div>
+      <UserInfoModel
+        isModalOpen={isModalOpen}
+        handleOk={handleOk}
+        handleCancel={handleCancel}
+      />
     </div>
   );
 };
