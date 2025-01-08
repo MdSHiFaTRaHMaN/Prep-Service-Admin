@@ -18,6 +18,7 @@ import EditUser from "../pages/EditUser";
 import FcmConfigaration from "../pages/FcmConfigaration";
 import SmtpConfigaration from "../pages/SmtpConfigaration";
 import ChangePassword from "../pages/ChangePassword";
+import AdminProfile from "../components/AdminProfile";
 
 
 
@@ -97,6 +98,10 @@ export const router = createBrowserRouter([
          {
           path: "/change-password",
           element : <ChangePassword />
+         },
+         {
+          path : "/admin-profile",
+          element: <AdminProfile />
          }
     ],
   },

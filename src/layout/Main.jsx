@@ -92,9 +92,9 @@ const Main = () => {
             marginLeft: isLargeScreen ? 250 : 0,
           }}
         >
-          <Content className="px-4 lg:px-6 py-4">
+          <Content className="lg:px-6 py-4">
             <div className="flex justify-between">
-              <Breadcrumb className="m-4">
+              <Breadcrumb className="my-4 bg-white p-1.5 rounded">
                 {generateBreadcrumbItems().map((item, index) => (
                   <Breadcrumb.Item key={index}>
                     <Link
