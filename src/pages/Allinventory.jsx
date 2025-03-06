@@ -3,7 +3,7 @@ import {
   FilterOutlined,
   PrinterOutlined,
 } from "@ant-design/icons";
-import { Button, DatePicker, Dropdown, Select, Table } from "antd";
+import { Button, DatePicker, Dropdown, Table } from "antd";
 import UserInfoModel from "../components/UserInfoModel";
 import { useState } from "react";
 import { Link } from "react-router-dom";
@@ -110,7 +110,7 @@ const Allinventory = () => {
     {
       title: "Print",
       key: "print",
-      render: (record) => (
+      render: () => (
         <Link
           to={`/inventory-print`}
           className="flex items-center text-orange-500"

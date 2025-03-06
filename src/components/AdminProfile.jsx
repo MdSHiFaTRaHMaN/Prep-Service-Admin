@@ -1,15 +1,20 @@
-import React, { useState } from "react";
-import { Avatar, Card, Descriptions, Button, Modal, Form, Input, message } from "antd";
+import { useState } from "react";
+import {
+  Avatar,
+  Card,
+  Descriptions,
+  Button,
+  Modal,
+  Form,
+  Input,
+  message,
+} from "antd";
+import { useAdminProfile } from "../api/api";
 
 const AdminProfile = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [adminInfo, setAdminInfo] = useState({
-    name: "MD SHiFaT RaHMaN",
-    email: "admin@example.com",
-    phone: "123-456-7890",
-    role: "Administrator",
-    address: "123 Admin St, City, Country",
-  });
+  const { adminProfile, isLoading, isError, error, refetch } = useAdminProfile();
+
 
   const showEditModal = () => {
     setIsModalOpen(true);
@@ -20,9 +25,9 @@ const AdminProfile = () => {
   };
 
   const handleFinish = (values) => {
-    setAdminInfo({ ...adminInfo, ...values });
+    console.log(values)
     setIsModalOpen(false);
-    message.success("Admin Profile Update Successfully")
+    message.success("Admin Profile Update Successfully");
   };
 
   return (
@@ -40,17 +45,13 @@ const AdminProfile = () => {
       >
         <div style={{ textAlign: "center", marginBottom: "20px" }}>
           <Avatar size={100} style={{ backgroundColor: "#87d068" }}>
-            {adminInfo.name?.charAt(0) || "A"}
+            {adminProfile.name?.charAt(0) || "A"}
           </Avatar>
         </div>
         <Descriptions column={1} bordered>
-          <Descriptions.Item label="Name">{adminInfo.name}</Descriptions.Item>
-          <Descriptions.Item label="Email">{adminInfo.email}</Descriptions.Item>
-          <Descriptions.Item label="Phone">{adminInfo.phone}</Descriptions.Item>
-          <Descriptions.Item label="Role">{adminInfo.role}</Descriptions.Item>
-          <Descriptions.Item label="Address">
-            {adminInfo.address}
-          </Descriptions.Item>
+          <Descriptions.Item label="Name">{adminProfile.first_name} {adminProfile.last_name}</Descriptions.Item>
+          <Descriptions.Item label="Email">{adminProfile.email}</Descriptions.Item>
+          <Descriptions.Item label="Role">{adminProfile.role}</Descriptions.Item>
         </Descriptions>
       </Card>
 
@@ -63,7 +64,7 @@ const AdminProfile = () => {
       >
         <Form
           layout="vertical"
-          initialValues={adminInfo}
+          initialValues={adminProfile}
           onFinish={handleFinish}
         >
           <Form.Item
@@ -80,22 +81,6 @@ const AdminProfile = () => {
               { required: true, message: "Please input your email!" },
               { type: "email", message: "Please enter a valid email!" },
             ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Phone"
-            name="phone"
-            rules={[
-              { required: true, message: "Please input your phone number!" },
-            ]}
-          >
-            <Input />
-          </Form.Item>
-          <Form.Item
-            label="Address"
-            name="address"
-            rules={[{ required: true, message: "Please input your address!" }]}
           >
             <Input />
           </Form.Item>

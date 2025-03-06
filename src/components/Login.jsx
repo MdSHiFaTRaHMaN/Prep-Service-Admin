@@ -1,20 +1,36 @@
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Button, Checkbox, Form, Input } from "antd";
+import { Button, Checkbox, Form, Input, message } from "antd";
 import Logo from "../assets/images/Admin Logo.png";
+import { useState } from "react";
+import { API } from "../api/api";
 
 const Login = () => {
-  const onFinish = (values) => {
-    console.log("Success:", values.username);
+  const [loading, setLoading] = useState(false);
 
-    const token = "sample_token_123456789";
+  const onFinish = async(values) => {
+    setLoading(true); // Start loading when submitting form
+    try {
+      const response = await API.post("/admin/login", {
+        email: values.email,
+        password: values.password,
+      });
 
-    // Save token and username to localStorage
-    localStorage.setItem("token", token); // Save token
-    localStorage.setItem("username", values.username); // Save username
-  };
+      // If successful, save the token in localStorage
+      localStorage.setItem("token", response.data.data.token);
 
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
+      // Show success message
+      message.success("Login successful!");
+
+      // Redirect to the admin dashboard (replace with your route)
+      window.location.href = "/";
+    } catch (error) {
+      // Show error message
+      message.error(
+        error.response?.data?.message || "Login failed. Please try again."
+      );
+    } finally {
+      setLoading(false); // Stop loading after request
+    }
   };
 
   return (
@@ -29,16 +45,15 @@ const Login = () => {
           name="login"
           initialValues={{ remember: true }}
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           className="space-y-4"
         >
           <Form.Item
-            name="username"
-            rules={[{ required: true, message: "Please input your username!" }]}
+            name="email"
+            rules={[{ required: true, message: "Please input your email!" }]}
           >
             <Input
               prefix={<UserOutlined className="text-gray-500" />}
-              placeholder="Username"
+              placeholder="Email"
               className="h-12"
               name="username"
               variant="filled"
@@ -65,10 +80,11 @@ const Login = () => {
           <Form.Item>
             <Button
               type="primary"
+              loading={loading}
               htmlType="submit"
               className="w-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 ... h-12 text-white rounded-md"
             >
-              Login
+               {loading ? "Logging in..." : "Login"}
             </Button>
           </Form.Item>
         </Form>

@@ -1,19 +1,19 @@
 import { Navigate, useLocation } from "react-router-dom";
 import { Spin } from "antd";
+import { useAdminProfile } from "../api/api";
 
 const PrivateRoute = ({ children }) => {
+  const { adminProfile, isLoading, isError, error } = useAdminProfile();
+
   const location = useLocation();
-  const username = localStorage.getItem("username");
-  const password = localStorage.getItem("password");
-  const isLoading = false; 
+  const token = localStorage.getItem("token");
 
   if (isLoading) {
     return <Spin />;
   }
 
-  // Check if username and password exist in localStorage
-  if (!username) {
-    return <Navigate to="/login" state={{ from: location  }} replace />;
+  if (isError || error || !adminProfile || !token) {
+    return <Navigate to="/login" state={{ from: location }} replace />;
   }
 
   return children;

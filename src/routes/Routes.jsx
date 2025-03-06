@@ -19,6 +19,7 @@ import FcmConfigaration from "../pages/FcmConfigaration";
 import SmtpConfigaration from "../pages/SmtpConfigaration";
 import ChangePassword from "../pages/ChangePassword";
 import AdminProfile from "../components/AdminProfile";
+import PrivateRoute from "./PrivateRoute";
 
 
 
@@ -29,7 +30,7 @@ export const router = createBrowserRouter([
   },
   {
     path: "/",
-    element:<Main />,
+    element: <PrivateRoute><Main /></PrivateRoute>,
     children: [
         { 
             path: "/",
@@ -102,7 +103,8 @@ export const router = createBrowserRouter([
          {
           path : "/admin-profile",
           element: <AdminProfile />
-         }
+         },
+
     ],
   },
 ]);

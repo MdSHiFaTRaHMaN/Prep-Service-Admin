@@ -91,11 +91,11 @@ const sidebarItems = [
     label: <span className="font-semibold">Rates</span>,
     children: [
       {
-        key: "6-1",
+        key: "7-1",
         label: <Link to="/all-rates">All Rates</Link>,
       },
       {
-        key: "6-2",
+        key: "7-2",
         label: <Link to="/create-rate">Create Rate</Link>,
       },
     ],
@@ -147,7 +147,7 @@ const sidebarItems = [
     ],
   },
   {
-    key: "3",
+    key: "11",
     icon: <LogoutOutlined />,
     label: (
       <Link to="/productReturn" className="font-semibold">
