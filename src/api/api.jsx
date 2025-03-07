@@ -33,22 +33,23 @@ export const useAdminProfile = () => {
     return { adminProfile, isLoading, isError, error, refetch };
   };
 // all Model with Single brand
-export const useModelByBrand = (brandID) => {
-  const getModelByBrand = async () => {
-    // const response = await API.get(`/model/all?brand_id=${brandID}`);
-    const response = await API.get(`/model?brand_id=${brandID}`);
-    return response.data;
+export const useAllRates = () => {
+  const getAllRates = async () => {
+    const response = await API.get(`/rate/all`);
+    console.log(response)
+    return response.data.data;
   };
   const {
-    data: modelByBrand = [],
+    data: allRates = [],
     isLoading,
     isError,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["modelByBrand", brandID],
-    queryFn: getModelByBrand,
+    queryKey: ["allRates"],
+    queryFn: getAllRates,
   });
-  return { modelByBrand, isLoading, isError, error, refetch };
+  return { allRates, isLoading, isError, error, refetch };
 };
+
 

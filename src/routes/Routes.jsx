@@ -8,7 +8,6 @@ import Overview from "../pages/Overview";
 import ProductReturn from "../pages/ProductReturn";
 import BillOverview from "../pages/BillOverview";
 import Payment from "../pages/Payment";
-import ManegeRates from "../pages/ManegeRates";
 import AllUsers from "../pages/AllUsers";
 import NewUser from "../pages/NewUser";
 import Allinventory from "../pages/Allinventory";
@@ -20,6 +19,7 @@ import SmtpConfigaration from "../pages/SmtpConfigaration";
 import ChangePassword from "../pages/ChangePassword";
 import AdminProfile from "../components/AdminProfile";
 import PrivateRoute from "./PrivateRoute";
+import CreateRate from "../pages/CreateRate";
 
 
 
@@ -66,7 +66,7 @@ export const router = createBrowserRouter([
          },
          {
           path: "/create-rate",
-          element: <ManegeRates />
+          element: <CreateRate />
          },
          {
           path: "/reports",
