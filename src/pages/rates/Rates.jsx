@@ -4,6 +4,7 @@ import { FiEdit } from "react-icons/fi";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
 import { API, useAllRates } from "../../api/api";
+import EditRateModel from "./EditRateModel";
 
 const Rates = () => {
   const [loadingDelete, setLoadingDelete] = useState(false);
@@ -75,7 +76,7 @@ const Rates = () => {
       render: (_, record) => (
         <div className="flex items-center gap-4">
           <span className="cursor-pointer text-xl text-blue-500 hover:text-blue-700">
-            <FiEdit />
+            <EditRateModel rateId={record.id}/>
           </span>
           <span
             onClick={() => handleDelete(record.id)}
