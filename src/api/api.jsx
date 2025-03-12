@@ -1,6 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 export const API = axios.create({
+  // baseURL: "http://localhost:7000/api/v1",
   baseURL: "https://prep-service.onrender.com/api/v1",
 });
 
@@ -68,37 +69,33 @@ export const useSingleRate = (rateId) => {
   });
   return { singleRate, isLoading, isError, error, refetch };
 };
-// all Inventory
 
-export const useAllInventory = ({
-  startTime = "",
-  endTime = "",
+// get all Inventories
+export const useAllInventories = ({
+  start_date,
+  end_date,
   page = 1,
   limit = 10,
-}) => {
-  const getAllInventory = async () => {
+} = {}) => {
+  const getAllInventories = async () => {
     const response = await API.get("/inventory/all", {
-      params: { page, limit, startTime, endTime },
+      params: { start_date, end_date, page, limit },
     });
-
-    console.log("response", response);
     return response.data;
   };
 
   const {
-    data = {},
+    data: response = {},
     isLoading,
     isError,
     error,
     refetch,
   } = useQuery({
-    queryKey: ["allInventory", startTime, endTime, page, limit],
-    queryFn: getAllInventory,
+    queryKey: ["allInventories", start_date, end_date, page, limit],
+    queryFn: getAllInventories,
   });
 
-  const allInventory = data?.data || [];
-  const pagination = data?.pagination || {};
+  const { data: allInventories = [], pagination = {} } = response;
 
-  return { allInventory, pagination, isLoading, isError, error, refetch };
+  return { allInventories, pagination, isLoading, isError, error, refetch };
 };
-

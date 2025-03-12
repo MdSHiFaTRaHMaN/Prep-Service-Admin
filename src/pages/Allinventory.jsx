@@ -1,31 +1,25 @@
-import { FilterOutlined, PrinterOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Select, Space, Table } from "antd";
-import UserInfoModel from "../components/UserInfoModel";
-import { useState } from "react";
-import { Link } from "react-router-dom";
-import Upcoming from "../assets/images/commingsoon.png";
-import { useAllInventory } from "../api/api";
-import { FaFilePdf } from "react-icons/fa";
-import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
+import { API, useAllInventories } from "../api/api";
+import { Image, Table, Spin, Button, message, Select } from "antd";
+import { AiFillPrinter, AiOutlineDownload } from "react-icons/ai";
+import { EditOutlined } from "@ant-design/icons";
+import EditBoxDimention from "./EditBoxDimention";
 
-const { RangePicker } = DatePicker;
+function AllInventory() {
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
+  const [isEditInventory, setIsEditInventory] = useState(false);
+  const [inventoryDetails, setInventoryDetails] = useState(null);
 
-const AllInventory = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [startTime, setStartTime] = useState("");
-  const [endTime, setEndTime] = useState("");
   const [filters, setFilters] = useState({
     page: 1,
     limit: 10,
+    start_date: "",
+    end_date: "",
   });
-  const { allInventory, pagination } = useAllInventory({
-    startTime,
-    endTime,
-    filters,
-  });
-  const [dateRange, setDateRange] = useState([null, null]);
 
-  console.log(allInventory);
+  const { allInventories, pagination, isLoading, isError, error, refetch } =
+    useAllInventories(filters);
 
   const handleTableChange = (pagination) => {
     const { current: page, pageSize: limit } = pagination;
@@ -37,26 +31,106 @@ const AllInventory = () => {
     }));
   };
 
-  const showModal = () => {
-    setIsModalOpen(true);
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      start_date: startDate,
+      end_date: endDate,
+    }));
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    refetch();
+  }, [filters, refetch]);
+
+  const handleEdit = (inventoryDetails) => {
+    setInventoryDetails(inventoryDetails);
+    setIsEditInventory(true);
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  const handleModalClose = () => {
+    setInventoryDetails(null); // Reset the details
+    setIsEditInventory(false); // Close modal
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleChange = (value) => {
+    let start, end;
+    const today = new Date();
+
+    switch (value) {
+      case "today":
+        start = end = today.toISOString().split("T")[0];
+        break;
+      case "yesterday":
+        let yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        start = end = yesterday.toISOString().split("T")[0];
+        break;
+      case "thisMonth":
+        start = new Date(today.getFullYear(), today.getMonth(), 1)
+          .toISOString()
+          .split("T")[0];
+        end = today.toISOString().split("T")[0];
+        break;
+      case "previousMonth":
+        let firstDayPrevMonth = new Date(
+          today.getFullYear(),
+          today.getMonth() - 1,
+          1
+        );
+        let lastDayPrevMonth = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          0
+        );
+        start = firstDayPrevMonth.toISOString().split("T")[0];
+        end = lastDayPrevMonth.toISOString().split("T")[0];
+        break;
+      default:
+        start = "";
+        end = "";
+    }
+
+    setStartDate(start);
+    setEndDate(end);
   };
 
-  // ✅ PDF Download Function
-  const handleDownload = (pdf) => {
-    const link = document.createElement("a");
-    link.href = pdf;
-    link.setAttribute("download", pdf.split("/").pop()); // Extracts filename from URL
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+  const handleDownload = async (pdf) => {
+    try {
+      const pdfUrl = `https://prep-service.onrender.com${pdf}`;
+      const response = await fetch(pdfUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "inventory.pdf";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+
+      message.success("PDF downloaded successfully!");
+    } catch (error) {
+      message.error("Failed to download PDF.");
+      console.error("Error downloading PDF:", error);
+    }
+  };
+
+  const handleStatusChange = async (value, inventoryID) => {
+    try {
+      const response = await API.put(`/inventory/status/${inventoryID}`, {
+        status: value,
+      });
+
+      if (response.status === 200) {
+        message.success("Inventory status updated successfully");
+        refetch(); // Refresh Inventory details after update
+      } else {
+        message.error("Failed to update Inventory status");
+      }
+    } catch (error) {
+      message.error(`Error updating status ${error.message}`);
+    }
   };
 
   const columns = [
@@ -64,28 +138,18 @@ const AllInventory = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      render: (text) => <span>{dayjs(text).format("DD-MM-YYYY")}</span>,
+      render: (_, record) => (
+        <p>{new Date(record.date).toLocaleDateString()}</p>
+      ),
     },
     {
       title: "User Name",
       dataIndex: "user_id",
       key: "user_id",
-      render: (user_id) => (
-        <span onClick={() => showModal(user_id)} className="cursor-pointer">
-          {user_id}
-        </span>
-      ),
-    },
-    {
-      title: "Image",
-      dataIndex: "image",
-      key: "image",
-      render: (src) => (
-        <img
-          src={src || Upcoming}
-          alt="Product"
-          className="w-16 h-16 object-cover rounded-md"
-        />
+      render: (_, record) => (
+        <p>
+          {record.first_name} {record.last_name}
+        </p>
       ),
     },
     {
@@ -94,23 +158,90 @@ const AllInventory = () => {
       key: "transaction_no",
     },
     {
-      title: "Type",
+      title: "Image",
+      dataIndex: "image",
+      key: "image",
+      render: (image) => (
+        <Image
+          src={`https://prep-service.onrender.com${image}`}
+          alt="img"
+          width={50}
+          height={50}
+        />
+      ),
+    },
+    {
+      title: "Item Name",
+      dataIndex: "item_name",
+      key: "item_name",
+    },
+    {
+      title: "Rate Type",
       dataIndex: "rate_type_name",
       key: "rate_type_name",
     },
     {
-      title: "Qty.",
+      title: "Qty",
       dataIndex: "quantity",
       key: "quantity",
+    },
+    {
+      title: "Amount",
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => <span>$ {amount}</span>,
+    },
+    {
+      title: "Box",
+      dataIndex: "box",
+      key: "box",
+    },
+    {
+      title: "Dimension",
+      dataIndex: "dimension",
+      key: "dimension",
+    },
+
+    {
+      title: "Box & Dimension",
+      key: "edit",
+      render: (_, record) => (
+        <Button
+          size="small"
+          icon={<EditOutlined />}
+          onClick={() => handleEdit(record)}
+        >
+          Upload
+        </Button>
+      ),
+    },
+
+    {
+      title: "PDF",
+      key: "pdf",
+      render: (_, record) =>
+        record.pdf === "" ? (
+          <p>No PDF</p>
+        ) : (
+          <div>
+            <Button
+              icon={<AiOutlineDownload />}
+              onClick={() => handleDownload(record.pdf)}
+              size="small"
+            >
+              Download
+            </Button>
+          </div>
+        ),
     },
     {
       title: "Status",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
+      render: (_, record) => (
         <Select
-          defaultValue={status}
-          style={{ width: 120 }}
+          value={record.status}
+          onChange={(value) => handleStatusChange(value, record.id)}
           options={[
             { value: "Panding", label: "Panding" },
             { value: "Processing", label: "Processing" },
@@ -121,98 +252,67 @@ const AllInventory = () => {
       ),
     },
     {
-      title: "Amount",
-      dataIndex: "amount",
-      key: "amount",
-      render: (text) => <span>${text}</span>,
-    },
-    {
       title: "Print",
       key: "print",
-      render: (_, record) => (
-        <Space>
-          {/* ✅ PDF Download Button */}
-          <button
-            className="text-red-600 text-xl"
-            onClick={() => handleDownload(record.pdf)}
-          >
-            <FaFilePdf />
-          </button>
-
-          {/* Print Button */}
-          <Link
-            to={`/inventory-print`}
-            className="flex items-center text-orange-500"
-          >
-            <PrinterOutlined className="text-xl" />
-          </Link>
-        </Space>
+      render: () => (
+        <AiFillPrinter className="text-orange-500 text-lg cursor-pointer hover:scale-110" />
       ),
     },
   ];
 
-  const handleDateChange = (dates, dateStrings) => {
-    setDateRange(dateStrings);
-  };
-
-  const handleApplyFilters = () => {
-    setStartTime(dateRange[0]);
-    setEndTime(dateRange[1]);
-  };
-
   return (
-    <div className="p-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold mb-4">All Inventory Receive</h1>
-        {/* Filters */}
-        <div className="rounded-lg mb-6">
-          <div className="flex gap-6">
-            <div>
-              <label className="block text-gray-600 mb-1">
-                Select Date Range
-              </label>
-              <RangePicker
-                className="w-full"
-                onChange={handleDateChange} // Add onChange event to handle date change
-              />
-            </div>
-            <div className="flex items-end">
-              <Button
-                type="primary"
-                icon={<FilterOutlined />}
-                className="w-full bg-green-600"
-                onClick={handleApplyFilters} // Add onClick event for filter button
-              >
-                Apply Filters
-              </Button>
-            </div>
-          </div>
+    <div>
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold mb-4">Deals Details</h3>
+
+          <Select
+            placeholder="Select a date"
+            style={{
+              width: 120,
+            }}
+            onChange={handleChange}
+            options={[
+              { value: "", label: "All" },
+              { value: "today", label: "Today" },
+              { value: "yesterday", label: "Yesterday" },
+              { value: "thisMonth", label: "This Month" },
+              { value: "previousMonth", label: "Previous Month" },
+            ]}
+          />
         </div>
+
+        {isLoading ? (
+          <Spin size="large" className="block mx-auto my-10" />
+        ) : (
+          <Table
+            scroll={{ x: "max-content" }}
+            columns={columns}
+            dataSource={allInventories.map((item, index) => ({
+              key: index,
+              ...item,
+            }))}
+            pagination={{
+              current: filters.page,
+              pageSize: filters.limit,
+              total: pagination.total,
+            }}
+            onChange={handleTableChange}
+            bordered
+          />
+        )}
+
+        {isError && <p className="text-red-600">Error: {error.message}</p>}
       </div>
 
-      {/* Table with Pagination */}
-      <Table
-        columns={columns}
-        dataSource={allInventory.map((item, index) => ({
-          key: index,
-          ...item,
-        }))}
-        pagination={{
-          current: filters.page,
-          pageSize: filters.limit,
-          total: pagination.total,
-        }}
-        onChange={handleTableChange}
-        className="bg-white rounded-md"
-      />
-
-      <UserInfoModel
-        isModalOpen={isModalOpen}
-        handleOk={handleOk}
-        handleCancel={handleCancel}
+      <EditBoxDimention
+        inventoryDetails={inventoryDetails}
+        isOpen={isEditInventory}
+        onClose={handleModalClose}
+        refetch={refetch}
       />
     </div>
   );
-};
+}
 
 export default AllInventory;
