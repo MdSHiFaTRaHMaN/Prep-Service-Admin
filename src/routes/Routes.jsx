@@ -9,7 +9,6 @@ import ProductReturn from "../pages/ProductReturn";
 import BillOverview from "../pages/BillOverview";
 import Payment from "../pages/Payment";
 import AllUsers from "../pages/AllUsers";
-import NewUser from "../pages/NewUser";
 import Allinventory from "../pages/Allinventory";
 import PrintInventory from "../pages/PrintInventory";
 import Rates from "../pages/rates/Rates";
@@ -20,6 +19,7 @@ import ChangePassword from "../pages/ChangePassword";
 import AdminProfile from "../components/AdminProfile";
 import PrivateRoute from "./PrivateRoute";
 import CreateRate from "../pages/CreateRate";
+import CreateNewUser from "../pages/CreateNewUser";
 
 
 
@@ -78,14 +78,14 @@ export const router = createBrowserRouter([
          },
          {
           path: "/create-user",
-          element: <NewUser />
+          element: <CreateNewUser />
          },
          {
           path: "/inventory-print",
           element: <PrintInventory />
          },
          {
-          path: "/edit-user",
+          path: "/user-edit/:userId",
           element: <EditUser />
          },
          {

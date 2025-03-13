@@ -70,6 +70,26 @@ export const useSingleRate = (rateId) => {
   return { singleRate, isLoading, isError, error, refetch };
 };
 
+// get all user 
+
+export const useAllUser = () => {
+  const getAllUser = async () => {
+    const response = await API.get(`/user/all`);
+    return response.data.data;
+  };
+  const {
+    data: allUser = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["allUser"],
+    queryFn: getAllUser,
+  });
+  return { allUser, isLoading, isError, error, refetch };
+};
+
 // get all Inventories
 export const useAllInventories = ({
   start_date,
@@ -99,3 +119,24 @@ export const useAllInventories = ({
 
   return { allInventories, pagination, isLoading, isError, error, refetch };
 };
+
+// get all user 
+
+export const useSingleUser = (userId) => {
+  const getSingleUser = async () => {
+    const response = await API.get(`/user/${userId}`);
+    return response.data;
+  };
+  const {
+    data: singleUser = [],
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["singleUser", userId],
+    queryFn: getSingleUser,
+  });
+  return { singleUser, isLoading, isError, error, refetch };
+};
+

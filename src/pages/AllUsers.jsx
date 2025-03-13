@@ -2,23 +2,28 @@ import { message, Modal, Select, Table } from "antd";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
+import { useAllUser } from "../api/api";
+import Shadow from "../assets/images/usershadow.png";
 
 const AllUsers = () => {
+
+  const { allUser } = useAllUser();
+
   const columns = [
     {
       title: "User ID",
-      dataIndex: "user_id",
-      key: "user_id",
+      dataIndex: "id",
+      key: "id",
       render: (text) => <span>{text}</span>,
     },
     {
       title: "Image",
-      dataIndex: "image",
-      key: "image",
+      dataIndex: "profile_pic",
+      key: "profile_pic",
       render: (src) => (
         <img
-          src={src}
-          alt="Product"
+          src={src || Shadow}
+          alt="User Image"
           className="w-16 h-16 object-cover rounded-md"
         />
       ),
@@ -26,8 +31,8 @@ const AllUsers = () => {
     {
       title: "User Name",
       dataIndex: "name",
-      key: "date",
-      render: (name) => <span>{name}</span>,
+      key: "name",
+      render: (_, record) => <span>{record.first_name} {record.last_name}</span>,
     },
 
     {
@@ -51,7 +56,7 @@ const AllUsers = () => {
       render: (record) => (
         <div className="flex items-center gap-4">
           {/* Edit Icon */}
-          <Link to="/edit-user"
+          <Link to={`/user-edit/${record.id}`}
             className="cursor-pointer text-xl text-blue-500 hover:text-blue-700"
           >
             <FiEdit />
@@ -59,7 +64,7 @@ const AllUsers = () => {
 
           {/* Delete Icon */}
           <span
-            onClick={() => handleDelete(record.user_id)}
+            onClick={() => handleDelete(record.id)}
             className="cursor-pointer text-xl text-red-500 hover:text-red-700"
           >
             <RiDeleteBinFill />
@@ -85,33 +90,6 @@ const AllUsers = () => {
       },
     });
   };
-
-  const data = [
-    {
-      user_id: "01",
-      name: "Leonal Messi",
-      email: "imadmin@gmail.com",
-      phone: "017 00 00 00 00",
-      image: "https://i.ibb.co.com/RhvxW5G/images.jpg",
-      status: "Active",
-    },
-    {
-      user_id: "02",
-      name: "HERO ALOM",
-      email: "heroalom@gmail.com",
-      phone: "017 11 22 33 44",
-      image: "https://i.ibb.co.com/jVPrdYG/images.jpg",
-      status: "Active",
-    },
-    {
-      user_id: "03",
-      name: "JAYED KHAN",
-      email: "imadmin@gmail.com",
-      phone: "017 55 66 77 88",
-      image: "https://i.ibb.co.com/C20mQ0S/1686576913-707565add7318d6bfe65c70ebadee06f.gif",
-      status: "Active",
-    },
-  ];
 
   const monthData = [
     { value: "january", label: "January" },
@@ -149,7 +127,7 @@ const AllUsers = () => {
       </div>
       <Table
         columns={columns}
-        dataSource={data}
+        dataSource={allUser}
         pagination={false}
         className="bg-white shadow-md rounded-md"
       />
