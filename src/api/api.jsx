@@ -70,7 +70,7 @@ export const useSingleRate = (rateId) => {
   return { singleRate, isLoading, isError, error, refetch };
 };
 
-// get all user 
+// get all user
 
 export const useAllUser = () => {
   const getAllUser = async () => {
@@ -120,7 +120,7 @@ export const useAllInventories = ({
   return { allInventories, pagination, isLoading, isError, error, refetch };
 };
 
-// get all user 
+// get all user
 
 export const useSingleUser = (userId) => {
   const getSingleUser = async () => {
@@ -140,3 +140,32 @@ export const useSingleUser = (userId) => {
   return { singleUser, isLoading, isError, error, refetch };
 };
 
+// get my returns products
+export const useMyReturnProducts = ({
+  start_date,
+  end_date,
+  page = 1,
+  limit = 10,
+} = {}) => {
+  const getMyReturnProducts = async () => {
+    const response = await API.get("/return/all", {
+      params: { start_date, end_date, page, limit },
+    });
+    return response.data;
+  };
+
+  const {
+    data: response = {},
+    isLoading,
+    isError,
+    error,
+    refetch,
+  } = useQuery({
+    queryKey: ["myReturnProducts", start_date, end_date, page, limit],
+    queryFn: getMyReturnProducts,
+  });
+
+  const { data: myReturnProducts = [], pagination = {} } = response;
+
+  return { myReturnProducts, pagination, isLoading, isError, error, refetch };
+};

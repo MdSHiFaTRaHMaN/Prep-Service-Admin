@@ -1,4 +1,4 @@
-import { message, Modal, Select, Table } from "antd";
+import { message, Modal, Select, Spin, Table } from "antd";
 import { FiEdit } from "react-icons/fi";
 import { RiDeleteBinFill } from "react-icons/ri";
 import { Link } from "react-router-dom";
@@ -6,8 +6,7 @@ import { useAllUser } from "../api/api";
 import Shadow from "../assets/images/usershadow.png";
 
 const AllUsers = () => {
-
-  const { allUser } = useAllUser();
+  const { allUser, isLoading } = useAllUser();
 
   const columns = [
     {
@@ -22,7 +21,7 @@ const AllUsers = () => {
       key: "profile_pic",
       render: (src) => (
         <img
-          src={src || Shadow}
+          src={`https://prep-service.onrender.com${src}` || Shadow}
           alt="User Image"
           className="w-16 h-16 object-cover rounded-md"
         />
@@ -32,7 +31,11 @@ const AllUsers = () => {
       title: "User Name",
       dataIndex: "name",
       key: "name",
-      render: (_, record) => <span>{record.first_name} {record.last_name}</span>,
+      render: (_, record) => (
+        <span>
+          {record.first_name} {record.last_name}
+        </span>
+      ),
     },
 
     {
@@ -56,7 +59,8 @@ const AllUsers = () => {
       render: (record) => (
         <div className="flex items-center gap-4">
           {/* Edit Icon */}
-          <Link to={`/user-edit/${record.id}`}
+          <Link
+            to={`/user-edit/${record.id}`}
             className="cursor-pointer text-xl text-blue-500 hover:text-blue-700"
           >
             <FiEdit />
@@ -73,7 +77,6 @@ const AllUsers = () => {
       ),
     },
   ];
-
 
   const handleDelete = (key) => {
     Modal.confirm({
@@ -115,7 +118,7 @@ const AllUsers = () => {
   return (
     <div className="min-h-screen bg-gray-100 p-8">
       <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold mb-4">All Inventory Receive</h1>
+        <h1 className="text-2xl font-bold mb-4">All Users</h1>
         <Select
           showSearch
           placeholder="Select a Month"
@@ -125,12 +128,16 @@ const AllUsers = () => {
           options={monthData}
         />
       </div>
-      <Table
-        columns={columns}
-        dataSource={allUser}
-        pagination={false}
-        className="bg-white shadow-md rounded-md"
-      />
+      {isLoading ? (
+        <Spin />
+      ) : (
+        <Table
+          columns={columns}
+          dataSource={allUser}
+          pagination={false}
+          className="bg-white shadow-md rounded-md"
+        />
+      )}
     </div>
   );
 };

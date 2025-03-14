@@ -1,22 +1,101 @@
-import { FilterOutlined, PrinterOutlined } from "@ant-design/icons";
-import { Button, DatePicker, Table } from "antd";
-import { useState } from "react";
-import UserInfoModel from "../components/UserInfoModel";
-const { RangePicker } = DatePicker;
+import React, { useEffect, useState } from "react";
+import { Image, Table, Spin, Button, message, Select } from "antd";
+import { API, useMyReturnProducts } from "../api/api";
+import { AiFillPrinter } from "react-icons/ai";
 
-const ProductReturn = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false);
+function ReturnOverView() {
+  const [startDate, setStartDate] = useState("");
+  const [endDate, setEndDate] = useState("");
 
-  const showModal = () => {
-    setIsModalOpen(true);
+  const [filters, setFilters] = useState({
+    page: 1,
+    limit: 10,
+    start_date: "",
+    end_date: "",
+  });
+
+  const { myReturnProducts, pagination, isLoading, isError, error, refetch } =
+    useMyReturnProducts(filters);
+
+  const handleTableChange = (pagination) => {
+    const { current: page, pageSize: limit } = pagination;
+
+    setFilters((prevFilters) => ({
+      ...prevFilters,
+      page,
+      limit,
+    }));
   };
 
-  const handleOk = () => {
-    setIsModalOpen(false);
+  useEffect(() => {
+    setFilters((prev) => ({
+      ...prev,
+      start_date: startDate,
+      end_date: endDate,
+    }));
+  }, [startDate, endDate]);
+
+  useEffect(() => {
+    refetch();
+  }, [filters, refetch]);
+
+  const handleChange = (value) => {
+    let start, end;
+    const today = new Date();
+
+    switch (value) {
+      case "today":
+        start = end = today.toISOString().split("T")[0];
+        break;
+      case "yesterday":
+        let yesterday = new Date();
+        yesterday.setDate(today.getDate() - 1);
+        start = end = yesterday.toISOString().split("T")[0];
+        break;
+      case "thisMonth":
+        start = new Date(today.getFullYear(), today.getMonth(), 1)
+          .toISOString()
+          .split("T")[0];
+        end = today.toISOString().split("T")[0];
+        break;
+      case "previousMonth":
+        let firstDayPrevMonth = new Date(
+          today.getFullYear(),
+          today.getMonth() - 1,
+          1
+        );
+        let lastDayPrevMonth = new Date(
+          today.getFullYear(),
+          today.getMonth(),
+          0
+        );
+        start = firstDayPrevMonth.toISOString().split("T")[0];
+        end = lastDayPrevMonth.toISOString().split("T")[0];
+        break;
+      default:
+        start = "";
+        end = "";
+    }
+
+    setStartDate(start);
+    setEndDate(end);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
+  const handleStatusChange = async (value, inventoryID) => {
+    try {
+      const response = await API.put(`/return/status/${inventoryID}`, {
+        status: value,
+      });
+
+      if (response.status === 200) {
+        message.success("Inventory status updated successfully");
+        refetch(); // Refresh Inventory details after update
+      } else {
+        message.error("Failed to update Inventory status");
+      }
+    } catch (error) {
+      message.error(`Error updating status ${error.message}`);
+    }
   };
 
   const columns = [
@@ -24,155 +103,109 @@ const ProductReturn = () => {
       title: "Date",
       dataIndex: "date",
       key: "date",
-      render: (text) => <span>{text}</span>,
-    },
-    {
-      title: "User Name",
-      dataIndex: "name",
-      key: "date",
-      render: (name) => (
-        <span onClick={() => showModal(name)} className="cursor-pointer">
-          {name}
-        </span>
-      ),
-    },
-    {
-      title: "Image",
-      dataIndex: "image",
-      key: "image",
-      render: (src) => (
-        <img
-          src={src}
-          alt="Product"
-          className="w-16 h-16 object-cover rounded-md"
-        />
+      render: (_, record) => (
+        <p>{new Date(record.date).toLocaleDateString()}</p>
       ),
     },
     {
       title: "Transaction No.",
-      dataIndex: "transaction",
-      key: "transaction",
-    },
-    {
-      title: "Type",
-      dataIndex: "type",
-      key: "type",
-    },
-    {
-      title: "Qty.",
-      dataIndex: "quantity",
-      key: "quantity",
+      dataIndex: "transaction_no",
+      key: "transaction_no",
     },
 
     {
-      title: "Resone.",
-      dataIndex: "resone",
-      key: "resone",
+      title: "Item Name",
+      dataIndex: "item_name",
+      key: "item_name",
+    },
+    {
+      title: "Rate Type",
+      dataIndex: "rate_type_name",
+      key: "rate_type_name",
+    },
+    {
+      title: "Qty",
+      dataIndex: "quantity",
+      key: "quantity",
     },
     {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
-      render: (text) => <span>${text}</span>,
+      render: (amount) => <span>$ {amount}</span>,
     },
     {
-      title: "Conditions",
-      dataIndex: "conditions",
-      key: "conditions",
-      render: (conditions) => <span>${conditions}</span>,
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
+      render: (_, record) => (
+        <Select
+          value={record.status}
+          onChange={(value) => handleStatusChange(value, record.id)}
+          options={[
+            { value: "Panding", label: "Panding" },
+            { value: "Processing", label: "Processing" },
+            { value: "Complate", label: "Complate" },
+            { value: "Cancelled", label: "Cancelled" },
+          ]}
+        />
+      ),
     },
     {
       title: "Print",
       key: "print",
       render: () => (
-        <Button
-          type="text"
-          icon={<PrinterOutlined className="text-orange-500 text-xl" />}
-        />
+        <AiFillPrinter className="text-orange-500 text-lg cursor-pointer hover:scale-110" />
       ),
     },
   ];
 
-  const data = [
-    {
-      key: "1",
-      name: "Leonal Messi",
-      date: "01/01/2024",
-      image: "https://i.ibb.co.com/FzPzjLN/images.jpg",
-      transaction: "101-00979",
-      type: "FBM",
-      quantity: 10,
-      status: "Padding",
-      amount: "34,295",
-      resone: " ",
-      conditions: "24,420",
-    },
-    {
-      key: "2",
-      name: "Shakib Al Hasan",
-      date: "01/01/2024",
-      image: "https://i.ibb.co.com/T1s4wHV/download.jpg",
-      transaction: "101-00979",
-      type: "FBM",
-      quantity: 50,
-      status: "Out Of Stock",
-      amount: "34,295",
-      resone: " ",
-      conditions: "24,420",
-    },
-    {
-      key: "3",
-      date: "01/01/2024",
-      name: "Afran Nishu",
-      image: "https://i.ibb.co.com/fd31Gdx/strawberry.jpg",
-      transaction: "101-00979",
-      type: "FBM",
-      quantity: 20,
-      status: "Padding",
-      amount: "34,295",
-      resone: " ",
-      conditions: "24,420",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-gray-100 p-8">
-      <div className="flex items-center justify-between">
-        <h1 className="text-2xl font-bold mb-4">All Return receive</h1>
-        {/* Filters */}
-        <div className="rounded-lg mb-6">
-          <div className="flex gap-6">
-            <div>
-              <label className="block text-gray-600 mb-1">
-                Select Date Range
-              </label>
-              <RangePicker className="w-full" />
-            </div>
-            <div className="flex items-end">
-              <Button
-                type="primary"
-                icon={<FilterOutlined />}
-                className="w-full bg-green-600"
-              >
-                Apply Filters
-              </Button>
-            </div>
-          </div>
+    <div>
+      <div className="bg-white shadow-md rounded-lg p-6">
+        <div className="flex items-center justify-between">
+          <h3 className="text-lg font-semibold mb-2">My Return Products</h3>
+
+          <Select
+            placeholder="Select a date"
+            style={{
+              width: 120,
+            }}
+            onChange={handleChange}
+            options={[
+              { value: "", label: "All" },
+              { value: "today", label: "Today" },
+              { value: "yesterday", label: "Yesterday" },
+              { value: "thisMonth", label: "This Month" },
+              { value: "previousMonth", label: "Previous Month" },
+            ]}
+          />
         </div>
       </div>
-      <Table
-        columns={columns}
-        dataSource={data}
-        pagination={true}
-        className="bg-white shadow-md rounded-md"
-      />
-      <UserInfoModel
-        isModalOpen={isModalOpen}
-        handleOk={handleOk}
-        handleCancel={handleCancel}
-      />
+
+      {isLoading ? (
+        <Spin size="large" className="block mx-auto my-10" />
+      ) : (
+        <Table
+          scroll={{ x: "max-content" }}
+          columns={columns}
+          dataSource={myReturnProducts.map((item, index) => ({
+            key: index,
+            ...item,
+          }))}
+          pagination={{
+            current: filters.page,
+            pageSize: filters.limit,
+            total: pagination.total,
+          }}
+          onChange={handleTableChange}
+          bordered
+        />
+      )}
+
+      {isError && <p className="text-red-600">Error: {error.message}</p>}
     </div>
   );
-};
+}
 
-export default ProductReturn;
+export default ReturnOverView;

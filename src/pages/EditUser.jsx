@@ -25,34 +25,26 @@ const EditUser = () => {
 
   // Handle form submission
   const onFinish = async (values) => {
-     try {
-         const values = await form.validateFields();
-   
-         // Create FormData object
-         const formData = new FormData();
-         formData.append("first_name", values.first_name);
-         formData.append("last_name", values.last_name);
-         formData.append("phone", values.phone);
-        
-         setLoading(true);
-   
-         // API Call
-         const response = await API.put(`/user/update/${userId}`, formData, {
-           headers: { "Content-Type": "multipart/form-data" },
-         });
-   
-         if (response.status === 200) {
-           message.success("Profile Updated Successfully");
-         } else {
-           message.error("Update failed");
-         }
-   
-         setLoading(false);
-       } catch (error) {
-         console.error("Error:", error);
-         message.error("Something went wrong");
-         setLoading(false);
-       }
+    try {
+      const values = await form.validateFields();
+
+      setLoading(true);
+
+      // API Call
+      const response = await API.put(`/user/update/${userId}`, values);
+      console.log("response", response);
+      if (response.status === 200) {
+        message.success("Profile Updated Successfully");
+      } else {
+        message.error("Update failed");
+      }
+
+      setLoading(false);
+    } catch (error) {
+      console.error("Error:", error);
+      message.error("Something went wrong");
+      setLoading(false);
+    }
     navigate("/all-user");
   };
 
@@ -139,9 +131,7 @@ const EditUser = () => {
             <Form.Item
               label="Phone"
               name="phone"
-              rules={[
-                { required: true, message: "Phone number is required" },
-              ]}
+              rules={[{ required: true, message: "Phone number is required" }]}
             >
               <Input placeholder="Enter Phone Number" />
             </Form.Item>
